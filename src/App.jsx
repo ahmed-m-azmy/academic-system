@@ -24,6 +24,14 @@ import logo from "./logo.png";
 
 
 export default function App() {
+
+export default function App() {
+
+  return <div>TEST ✅</div>;
+
+}
+
+
   /* PROGRAMS */
   const [programs, setPrograms] = useState([]);
   const [program, setProgram] = useState("");
