@@ -126,11 +126,18 @@ const handleLogout = async () => {
   setUser(null);
 };
 
+
 useEffect(() => {
-  supabase.auth.getUser().then(({ data }) => {
-    setUser(data.user);
-  });
+  try {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data?.user || null);
+    });
+  } catch (e) {
+    console.error("AUTH ERROR:", e);
+    setUser(null);
+  }
 }, []);
+
 
 
   const loadCourses = useCallback(async () => {
