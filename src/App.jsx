@@ -127,16 +127,24 @@ const handleLogout = async () => {
 };
 
 
+
 useEffect(() => {
-  try {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data?.user || null);
-    });
-  } catch (e) {
-    console.error("AUTH ERROR:", e);
-    setUser(null);
-  }
+  (async () => {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error(error);
+        setUser(null);
+      } else {
+        setUser(data?.user || null);
+      }
+    } catch (e) {
+      console.error("Auth crash:", e);
+      setUser(null);
+    }
+  })();
 }, []);
+
 
 
 
