@@ -21,6 +21,11 @@ import html2canvas from "html2canvas";
 import { ImageRun } from "docx";
 import { AlignmentType } from "docx";
 import logo from "./logo.png";
+
+if (!import.meta.env.VITE_SUPABASE_URL) {
+  return <div>Loading...</div>;
+}
+
 export default function App() {
 
   /* PROGRAMS */
