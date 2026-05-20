@@ -22,11 +22,15 @@ import { ImageRun } from "docx";
 import { AlignmentType } from "docx";
 import logo from "./logo.png";
 
+
+export default function App() {
 if (!import.meta.env.VITE_SUPABASE_URL) {
   return <div>Loading...</div>;
 }
 
-export default function App() {
+if (!supabase) {
+  return <div>Loading system...</div>;
+}
 
   /* PROGRAMS */
   const [programs, setPrograms] = useState([]);
