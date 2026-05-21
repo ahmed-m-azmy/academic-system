@@ -32,6 +32,31 @@ export default function App() {
   const [newProgram, setNewProgram] = useState("");
   const [plos, setPlos] = useState([]);
   const [user, setUser] = useState(null);
+    
+useEffect(() => {
+  (async () => {
+    try {
+
+let data = null;
+let error = null;
+
+if (supabase) {
+  const res = await supabase.auth.getUser();
+  data = res.data;
+  error = res.error;
+}
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+      setUser(data?.user || null);
+    } catch (e) {
+      console.error("Auth crash:", e);
+    }
+  })();
+}, []);
+
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
   const [selectedPLOs, setSelectedPLOs] = useState({});
@@ -87,9 +112,7 @@ const [password, setPassword] = useState("");
     }
   };
 
-if (!supabase) {
-  return <div>Supabase not ready ✅</div>;
-}
+
 
   useEffect(() => {
     loadPrograms();
@@ -129,35 +152,6 @@ const handleLogout = async () => {
   await supabase.auth.signOut();
   setUser(null);
 };
-
-
-
-
-export default function App() {
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) {
-          console.error(error);
-          return;
-        }
-        setUser(data?.user || null);
-      } catch (e) {
-        console.error("Auth crash:", e);
-      }
-    })();
-  }, []);
-
-  return (
-    <div>...</div>
-  );
-}
-
-
-
-
 
   const loadCourses = useCallback(async () => {
     if (!program) return;
