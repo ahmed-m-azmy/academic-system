@@ -1245,7 +1245,7 @@ if (!user) {
 if (!supabase) {
   return <div>Supabase not connected</div>;
 }
-
+return <h1>WORKING ✅</h1>;
     /* ─── UI ─── */
     return (
 
