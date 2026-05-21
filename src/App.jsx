@@ -87,6 +87,10 @@ const [password, setPassword] = useState("");
     }
   };
 
+if (!supabase) {
+  return <div>Supabase not ready ✅</div>;
+}
+
   useEffect(() => {
     loadPrograms();
   }, []);
@@ -128,22 +132,29 @@ const handleLogout = async () => {
 
 
 
-useEffect(() => {
-  (async () => {
-    try {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error(error);
-        setUser(null);
-      } else {
+
+export default function App() {
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.error(error);
+          return;
+        }
         setUser(data?.user || null);
+      } catch (e) {
+        console.error("Auth crash:", e);
       }
-    } catch (e) {
-      console.error("Auth crash:", e);
-      setUser(null);
-    }
-  })();
-}, []);
+    })();
+  }, []);
+
+  return (
+    <div>...</div>
+  );
+}
+
 
 
 
