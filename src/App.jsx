@@ -1245,6 +1245,952 @@ if (!user) {
 if (!supabase) {
   return <div>Supabase not connected</div>;
 }
-return <h1>WORKING ✅</h1>;
     /* ─── UI ─── */
-   }
+    return (
+
+      <div
+
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <div
+          style={{
+            width: "1200px",
+            padding: "20px",
+            fontFamily: "Arial"
+          }}
+        >
+
+          {/* Hidden Bar Chart for PDF Export */}
+          <div
+            id="plo-bar-chart"
+            style={{
+              position: "absolute",
+              left: "-9999px",
+              top: 0,
+              width: "800px",
+              height: "400px"
+            }}
+          >
+            <ResponsiveContainer width={800} height={400}>
+              <BarChart data={chartData.filter(d => d.value > 0)}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="#2196f3" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* HEADER */}
+
+          <div
+            style={{
+              width: "100%",
+              minHeight: "240px",
+              backgroundImage:
+                "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/header-bg.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              marginBottom: "20px",
+              textAlign: "center",
+              padding: "30px",
+              borderRadius: "10px",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.3)"
+            }}
+          >
+
+            <h1
+              style={{
+                color: "#fff",
+                fontSize: "36px",
+                fontWeight: "bold",
+                marginBottom: "15px",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px"
+              }}
+            >
+              🎓 Academic Quality System
+            </h1>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                backgroundColor: "rgba(255,255,255,0.95)",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                padding: "10px",
+                borderRadius: "8px"
+              }}
+            >
+
+              <button
+                onClick={exportPILOsReportPDF}
+                style={{
+                  margin: "10px 0",
+                  padding: "8px 14px",
+                  backgroundColor: "#2e7d32",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer"
+                }}
+              >
+                📄 Export PILOs Report (PDF)
+              </button>
+
+<button
+  onClick={() => setShowCharts(!showCharts)}
+  style={{
+    padding: "8px 14px",
+    borderRadius: "6px",
+    border: "none",
+    backgroundColor: "#6a1b9a",
+    color: "white",
+    cursor: "pointer"
+  }}
+>
+  {showCharts ? "Hide Charts" : "Show Charts"}
+</button>
+
+              <button
+                onClick={() => setActiveTab("program")}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: activeTab === "program" ? "#0d47a1" : "#1976d2",
+                  color: "white",
+                  transition: "0.3s",
+                  cursor: "pointer"
+                }}
+              >
+                Program
+              </button>
+
+              <button onClick={() => setActiveTab("course")}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: activeTab === "course" ? "#0d47a1" : "#1976d2",
+                  color: "white",
+                  transition: "0.3s",
+                  cursor: "pointer"
+                }}
+              >Courses</button>
+              
+
+              <button onClick={() => setActiveTab("plo")}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: activeTab === "plo" ? "#0d47a1" : "#1976d2",
+                  color: "white",
+                  transition: "0.3s",
+                  cursor: "pointer"
+                }}>PLOs</button>
+              <button onClick={() => setActiveTab("comparison")}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: activeTab === "comparison" ? "#0d47a1" : "#1976d2",
+                  color: "white",
+                  transition: "0.3s",
+                  cursor: "pointer"
+                }}>Comparison</button>
+              <button onClick={() => setActiveTab("ploResults")}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: activeTab === "ploResults" ? "#0d47a1" : "#1976d2",
+                  color: "white",
+                  transition: "0.3s",
+                  cursor: "pointer"
+                }}>PLOs Results</button>
+
+              <button
+                onClick={exportPDF}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: "green",
+                  color: "white",
+                  cursor: "pointer"
+                }}
+              >
+                Export PDF (Short)
+              </button>
+
+              <button
+                onClick={exportPILOsReportWord}
+                style={{
+                  margin: "10px 0",
+                  padding: "8px 14px",
+                  backgroundColor: "#1565c0",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer"
+                }}
+              >
+                📝 Export PILOs Report (Word)
+              </button>
+
+<button
+  onClick={handleLogout}
+  style={{
+    backgroundColor: "#e53935",
+    color: "white",
+    padding: "8px 14px",
+    borderRadius: "6px",
+    border: "none",
+    cursor: "pointer"
+  }}
+>
+  Logout
+</button>
+
+
+              <button
+                onClick={() => setActiveTab("none")}
+                style={{
+                  marginLeft: "auto",
+                  padding: "8px 14px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: "#e53935",
+                  color: "white",
+                  cursor: "pointer"
+                }}
+              >
+                Close
+              </button>
+
+            </div>
+          </div>
+
+          <h4>Quality Cycle (Academic Year)</h4>
+
+          <select
+            value={previousYearSelected}
+            onChange={(e) => setPreviousYearSelected(e.target.value)}
+          >
+            <option value="">Compare with year</option>
+
+            {["2025", "2026", "2027"]
+              .filter(y => y !== activeYear)
+              .map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+          </select>
+
+          <input
+            type="text"
+            placeholder="New Academic Year (e.g. 2026)"
+            value={newCycleYear}
+            onChange={(e) => setNewCycleYear(e.target.value)}
+            style={{ marginRight: "10px" }}
+          />
+
+          <button
+
+            onClick={() => {
+              let yearToUse = newCycleYear;
+
+              if (!yearToUse) {
+                yearToUse = window.prompt("Enter Academic Year for new Quality Cycle (e.g. 2026)");
+              }
+
+              if (!yearToUse) {
+                alert("Academic Year is required.");
+                return;
+              }
+
+              setIsCycleClosed(false);
+              setActiveYear(yearToUse);
+              setYear(yearToUse);
+              loadData();
+              setNewCycleYear("");
+            }}
+
+            style={{
+              backgroundColor: "#2196f3",
+              color: "white"
+            }}
+          >
+            Open New Quality Cycle
+          </button>
+
+          {activeYear && (
+            <p style={{ marginTop: "10px", fontWeight: "bold", color: "green" }}>
+              Active Academic Year: {activeYear}
+            </p>
+          )}
+
+          <hr />
+
+          {/* PROGRAM MANAGEMENT */}
+
+          {activeTab === "program" && (
+            <div>
+              <h2>Program Management</h2>
+
+              <input
+                value={newProgram}
+                onChange={e => setNewProgram(e.target.value)}
+                placeholder="New Program"
+              />
+              <button onClick={addProgram}>Add</button>
+
+              <ul>
+                {programs.map(p => (
+                  <li key={p.id}>
+                    {editingId === p.id ? (
+                      <>
+                        <input
+                          value={editedName}
+                          onChange={e => setEditedName(e.target.value)}
+                        />
+                        <button onClick={() => updateProgram(p.id)}>Save</button>
+                      </>
+                    ) : (
+                      <>
+                        {p.name}
+                        <button onClick={() => { setEditingId(p.id); setEditedName(p.name); }}>Edit</button>
+                        <button onClick={() => deleteProgram(p.id)}>Delete</button>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <hr />
+
+          {/* FIX #1: Single program selector, placed once in a logical position */}
+          <label><strong>Select Program: </strong></label>
+          <select
+            value={program}
+            onChange={e => setProgram(e.target.value)}
+          >
+            {programs.map(p => (
+              <option key={p.id} value={p.name}>{p.name}</option>
+            ))}
+          </select>
+
+          <h2>Program: {program}</h2>
+
+          {/* PLO MANAGEMENT */}
+
+          <hr />
+
+          {activeTab === "course" && (
+            <>
+              <h2>Course Management</h2>
+
+              <input
+                placeholder="Course Code (e.g. CS101)"
+                value={newCourseCode}
+                onChange={(e) => setNewCourseCode(e.target.value)}
+              />
+
+              <button
+                onClick={async () => {
+                  if (!newCourseCode) return;
+
+                  await supabase.from("courses").insert([{
+                    code: newCourseCode,
+                    program
+                  }]);
+
+                  setNewCourseCode("");
+                  loadCourses();
+                }}
+              >
+                Add Course
+              </button>
+
+              <ul>
+                {courses.map(c => (
+                  <li key={c.id}>
+                    {c.code}
+                    <button
+                      style={{ marginLeft: "10px", color: "red" }}
+                      onClick={async () => {
+                        await supabase.from("courses").delete().eq("id", c.id);
+                        loadCourses();
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {activeTab === "plo" && (
+            <>
+              <h2>PLO Management</h2>
+
+              <input
+                placeholder="New PLO"
+                value={newPLO}
+                onChange={e => setNewPLO(e.target.value)}
+              />
+              <button onClick={addPLO}>Add PLO</button>
+
+              <ul>
+                {plos.map(p => (
+                  <li key={p.id}>
+                    {editingPLO === p.id ? (
+                      <>
+                        <input
+                          value={editedPLOName}
+                          onChange={e => setEditedPLOName(e.target.value)}
+                        />
+                        <button onClick={() => updatePLO(p.id)}>Save</button>
+                      </>
+                    ) : (
+                      <>
+                        {p.name}
+                        <button onClick={() => { setEditingPLO(p.id); setEditedPLOName(p.name); }}>Edit</button>
+                        <button onClick={() => deletePLO(p.id)}>Delete</button>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          <hr />
+
+          {/* ✅ DASHBOARD CARDS */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "20px",
+              margin: "20px 0"
+            }}
+          >
+
+            <div style={cardStyle}>
+              <h4>Total PLOs</h4>
+              <h2>{Object.keys(ploResults).length}</h2>
+            </div>
+
+            <div style={cardStyle}>
+              <h4>Average Achievement</h4>
+              <h2>
+                {Object.values(ploResults).length
+                  ? (
+                    Object.values(ploResults).reduce((a, b) => a + b, 0) /
+                    Object.values(ploResults).length
+                  ).toFixed(1)
+                  : 0}%
+              </h2>
+            </div>
+
+            <div style={cardStyle}>
+              <h4>Best PLO</h4>
+              <h2>
+                {Object.keys(ploResults).length
+                  ? Object.entries(ploResults).sort((a, b) => b[1] - a[1])[0][0]
+                  : "-"}
+              </h2>
+            </div>
+
+          </div>
+
+          {/* CHART */}
+         
+{showCharts && (
+<div
+  style={{
+    width: "900px",
+    margin: "30px auto",
+    backgroundColor: "#fff",
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+  }}
+
+          >
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart
+                data={chartData.filter(d => d.value > 0)} // ✅ يمنع الفراغ
+                margin={{ top: 20, right: 30, left: 30, bottom: 20 }}
+              >
+
+                <XAxis
+                  dataKey="name"
+                  padding={{ left: 50, right: 50 }}
+                />
+
+                <YAxis />
+
+                <Tooltip />
+
+                <Bar
+                  dataKey="value"
+                  fill="#2196f3"
+                  radius={[6, 6, 0, 0]}
+                />
+
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+)}
+          {/* ✅ PIE CHART */}
+          {showCharts && (
+          <div
+            style={{
+              width: "500px",
+              margin: "40px auto",
+              backgroundColor: "#fff",
+              padding: "20px",
+              borderRadius: "10px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+              textAlign: "center"
+            }}
+          >
+            <h3>PLO Status Distribution</h3>
+
+            <div id="plo-pie-chart">
+              <PieChart width={400} height={300}>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label
+                >
+                  <Cell fill="#4caf50" /> {/* Achieved */}
+                  <Cell fill="#ff9800" /> {/* Acceptable */}
+                  <Cell fill="#f44336" /> {/* Needs Improvement */}
+                </Pie>
+
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </div>
+          </div>
+)}
+          {activeTab === "comparison" && (
+            <>
+              {/* ✅ COMPARISON CHART */}
+              <div
+                style={{
+                  width: "900px",
+                  margin: "40px auto",
+                  backgroundColor: "#fff",
+                  padding: "20px",
+                  borderRadius: "10px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+                }}
+              >
+                <h3 style={{ textAlign: "center" }}>
+                  PLO Comparison ({activeYear} vs {previousYearSelected || "Previous"})
+                </h3>
+
+                <div id="plo-bar-chart">
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={comparisonData}>
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+
+                      <Bar dataKey="current" fill="#2196f3" name="Current Year" />
+                      <Bar dataKey="previous" fill="#9e9e9e" name="Previous Year" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === "ploResults" && (
+            <div style={{ marginTop: "20px" }}>
+              <h3>PLOs Results</h3>
+
+              <table
+                border="1"
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginTop: "10px"
+                }}
+              >
+                <thead style={{ backgroundColor: "#f2f2f2" }}>
+                  <tr>
+                    <th>PLO</th>
+                    <th>Direct Assessment (%)</th>
+                    <th>Indirect Assessment (%)</th>
+                    <th>Total Assessment (%)</th>
+
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {Object.keys(ploResults).map((ploKey) => {
+                    const direct = ploResults[ploKey] || 0;
+                    const normalizedPLO = ploKey.replace(/\s+/g, "");
+                    const indirect = indirectResults[normalizedPLO] || 0;
+
+                    // ✅ Total = 60% Direct + 40% Indirect
+                    const total = 0.6 * direct + 0.4 * indirect;
+
+                    let status = "Needs Improvement";
+                    let color = "red";
+
+                    if (total >= 70) {
+                      status = "Achieved";
+                      color = "green";
+                    } else if (total >= 50) {
+                      status = "Acceptable";
+                      color = "orange";
+                    }
+
+                    return (
+                      <tr key={ploKey}>
+                        <td>{ploKey}</td>
+
+                        {/* Direct Assessment */}
+                        <td>{direct}%</td>
+
+                        {/* Indirect Assessment (manual input) */}
+                        <td>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={indirect}
+                            readOnly
+                            style={{ width: "70px" }}
+                          />
+                        </td>
+
+                        {/* Total Assessment */}
+                        <td>{total.toFixed(1)}%</td>
+
+                        {/* Status */}
+                        <td style={{ color, fontWeight: "bold" }}>
+                          {status}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+
+              </table>
+            </div>
+          )}
+
+          {/* STATUS */}
+
+          {activeTab === "comparison" && (
+            <div>
+              <h3>PLO Year-to-Year Comparison</h3>
+
+              <table
+                border="1"
+                style={{ width: "100%", borderCollapse: "collapse", marginTop: "15px" }}
+              >
+                <thead style={{ backgroundColor: "#f2f2f2" }}>
+                  <tr>
+                    <th>PLO</th>
+                    <th>{activeYear} (Active)</th>
+                    <th>{previousYearSelected || "—"} (Compare)</th>
+                    <th>Δ Difference</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {Object.keys(ploResults).map((ploKey) => {
+                    const current = ploResults[ploKey] || 0;
+                    const previous = previousYearSelected
+                      ? previousYear[ploKey] || 0
+                      : 0;
+
+                    const diff = current - previous;
+
+                    let status = "Needs Improvement";
+                    let color = "red";
+
+                    if (current >= 70) {
+                      status = "Achieved";
+                      color = "green";
+                    } else if (current >= 50) {
+                      status = "Acceptable";
+                      color = "orange";
+                    }
+
+                    return (
+                      <tr key={ploKey}>
+                        <td>{ploKey}</td>
+                        <td>{current.toFixed(1)}%</td>
+                        <td>
+                          {previousYearSelected ? `${previous.toFixed(1)}%` : "—"}
+                        </td>
+                        <td style={{ color: diff >= 0 ? "green" : "red" }}>
+                          {diff >= 0 ? "+" : ""}
+                          {diff.toFixed(1)}%
+                        </td>
+                        <td style={{ color, fontWeight: "bold" }}>{status}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              {/* OVERALL PROGRAM STATUS – METHOD 2 */}
+              {(() => {
+                const total = Object.keys(ploResults).length;
+                // إخفاء Overall لو عدد CLOs أقل من 2
+                if (records.length < 2) return null;
+                const achieved70 = Object.values(ploResults).filter(v => v >= 70).length;
+                const achieved50 = Object.values(ploResults).filter(v => v >= 50).length;
+                let overallStatus = "Needs Improvement";
+                let color = "red";
+                let reason = "";
+                if ((achieved70 / total) >= 0.8) {
+                  overallStatus = "Achieved";
+                  color = "green";
+                  reason = `${achieved70} out of ${total} PLOs ≥ 70%`;
+                } else if ((achieved50 / total) >= 0.8) {
+                  overallStatus = "Acceptable";
+                  color = "orange";
+                  reason = `${achieved50} out of ${total} PLOs ≥ 50%`;
+                } else {
+                  reason = `${achieved50} out of ${total} PLOs ≥ 50%`;
+                }
+                return (
+                  <div style={{
+                    marginTop: "20px",
+                    padding: "10px",
+                    border: `2px solid ${color}`,
+                    borderRadius: "6px"
+                  }}>
+                    <h3 style={{ color }}>
+                      Overall Program Status ({activeYear}): {overallStatus}
+                    </h3>
+                    <p>{reason}</p>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* ✅ EXCEL UPLOAD SECTION */}
+          <h3>Upload CLOs from Excel</h3>
+
+          <button
+            style={{ marginBottom: "10px" }}
+            onClick={downloadCLOTemplate}
+          >
+            ⬇️ Download Excel Template
+          </button>
+
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleExcelUpload}
+          />
+
+          <hr />
+
+          {showPreview && excelPreview.length > 0 && (
+            <div style={{ marginTop: "20px" }}>
+              <h3>Excel Preview</h3>
+
+              <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    {Object.keys(excelPreview[0]).map((col) => (
+                      <th key={col}>{col}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {excelPreview.map((row, idx) => (
+                    <tr key={idx}>
+                      {Object.values(row).map((val, i) => (
+                        <td key={i}>{String(val)}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <button
+                style={{ marginTop: "10px" }}
+                onClick={confirmExcelImport}
+              >
+                ✅ Confirm Import
+              </button>
+
+              <button
+                style={{ marginTop: "10px", marginLeft: "10px" }}
+                onClick={() => {
+                  setExcelPreview([]);
+                  setShowPreview(false);
+                }}
+              >
+                ❌ Cancel
+              </button>
+            </div>
+          )}
+
+          {/* ✅ INDIRECT ASSESSMENT UPLOAD */}
+          <h3>Upload Indirect Assessment (Excel)</h3>
+
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleIndirectExcelUpload}
+          />
+
+          <hr />
+
+          {/* ADD CLO SECTION */}
+
+
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginTop: "20px",   // ✅ مسافة من الجدول العلوي
+              marginBottom: "0px"  // ✅ التصاق بالجدول السفلي
+            }}
+          >
+
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                marginBottom: "20px",
+                alignItems: "center"
+              }}
+            >
+
+              {/* Course */}
+              <select
+                value={selectedCourseId}
+                onChange={(e) => setSelectedCourseId(e.target.value)}
+              >
+                <option value="">Course</option>
+                {courses.map(c => (
+                  <option key={c.id} value={c.id}>
+                    {c.code}
+                  </option>
+                ))}
+              </select>
+
+              {/* PLO */}
+              <select
+                value={plo}
+                onChange={(e) => setPlo(e.target.value)}
+              >
+                <option value="">PLO</option>
+                {plos.map(p => (
+                  <option key={p.id} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* CLO Description */}
+              <input
+                value={description}
+                placeholder="CLO Description"
+                onChange={(e) => setDescription(e.target.value)}
+              />
+
+              {/* Achievement */}
+              <input
+                type="number"
+                value={achievement}
+                placeholder="Achievement %"
+                onChange={(e) => setAchievement(e.target.value)}
+              />
+
+              {/* Weight */}
+              <input
+                type="number"
+                value={weight}
+                placeholder="Weight"
+                onChange={(e) => setWeight(Number(e.target.value))}
+              />
+
+              {/* Add Button */}
+              <button onClick={addCLO}>
+                Add CLO Record
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* TABLE */}
+          <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ backgroundColor: "#f2f2f2" }}>
+                <th>Course</th>
+                <th>Description</th>
+                <th>Mapping (PLO)</th>
+                <th>Achievement</th>
+                <th>Program</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {records.map((r) => {
+                return (
+
+                  <tr key={r.id}>
+
+                    <td>
+                      {courses.find(c => c.id === r.course_id)?.code || "-"}
+                    </td>
+                    <td>{r.description}</td>
+                    <td>{r.mapping.split(":")[0]}</td>
+                    <td>{r.achievement}%</td>
+                    <td>{r.program}</td>
+                    <td>
+
+                      <button
+                        onClick={() => deleteCLO(r.id)}
+                        disabled={isCycleClosed}
+                        style={{ color: isCycleClosed ? "#aaa" : "red" }}
+                      >
+                        Delete
+                      </button>
+
+                    </td>
+                  </tr>
+                  );
+                })}
+           </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+
