@@ -32,7 +32,17 @@ export default function App() {
   const [newProgram, setNewProgram] = useState("");
   const [plos, setPlos] = useState([]);
   const [user, setUser] = useState(null);
-    
+  
+useEffect(() => {
+  const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    setUser(session?.user || null);
+  });
+
+  return () => {
+    listener.subscription.unsubscribe();
+  };
+}, []);
+  
 useEffect(() => {
   (async () => {
     try {
@@ -140,7 +150,7 @@ const handleLogin = async () => {
     email,
     password
   });
-
+console.log("LOGIN:", data, error);
   if (error) {
     alert(error.message);
   } else {
@@ -233,8 +243,7 @@ const handleLogout = async () => {
       const w = Number(i.weight) || 1;
       const percentNum = Number(percent) || 0;
 
-      const val = (ach * percentNum * w) / 10000;
-      result[ploName] += val;
+const val = (ach * w) / 100; result[ploName] += val;
     });
 
     setPreviousYear(result);
@@ -260,8 +269,7 @@ const handleLogout = async () => {
         const percentNum = Number(percent) || 0;
         const ach = Number(i.achievement) || 0;
         const w = Number(i.weight) || 1;
-        const val = (ach * percentNum * w) / 10000;
-
+const val = (ach * w) / 100;
         if (!result[ploName]) {
           result[ploName] = { total: 0, weight: 0 };
         }
@@ -270,13 +278,15 @@ const handleLogout = async () => {
       });
     });
 
-    const final = {};
-    Object.keys(result).forEach(k => {
-      final[k] =
-        result[k].weight === 0
-          ? 0
-          : Number((result[k].total / result[k].weight).toFixed(1));
-    });
+  
+const final = {};
+Object.keys(result).forEach(k => {
+  final[k] =
+    result[k].weight === 0
+      ? 0
+      : Number((result[k].total * 100 / result[k].weight).toFixed(1));
+});
+
 
     setPloResults(final);
   };
@@ -306,7 +316,12 @@ const handleLogout = async () => {
   /* ─── PLO FUNCTIONS ─── */
   const addPLO = async () => {
     if (!newPLO) return;
-    await supabase.from("plos").insert([{ name: newPLO, program }]);
+   
+await supabase
+  .from("plos")
+  .insert([{ name: ploName, program }])
+  .select();
+
     setNewPLO("");
     loadPLOs();
   };
@@ -455,8 +470,14 @@ const handleLogout = async () => {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(sheet);
 
-      setExcelPreview(rows);
-      setShowPreview(true);
+
+const cleanedRows = rows.filter(r =>
+  r.Program && r.CourseCode && r.PLO && r.Achievement
+);
+
+setExcelPreview(cleanedRows);
+setShowPreview(true);
+
     };
 
     reader.readAsBinaryString(file);
@@ -521,9 +542,85 @@ const handleLogout = async () => {
   const [excelPreview, setExcelPreview] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
 
-  const confirmExcelImport = async () => {
-    alert("✅ Confirm clicked (Import logic will go here)");
-  };
+
+
+
+
+
+const confirmExcelImport = async () => {
+  
+console.log("🔥 IMPORT STARTED");
+
+  const hasErrors = excelPreview.some(r =>
+    !r.Program ||
+    !r.CourseCode ||
+    !r.PLO ||
+    isNaN(Number(r.Achievement))
+  );
+
+  if (hasErrors) {
+    alert("❌ Please fix invalid rows before importing");
+    return;
+  }
+
+  const uniquePLOs = [...new Set(excelPreview.map(r => r.PLO))];
+
+for (const ploName of uniquePLOs) {
+
+  const existingPLO = plos.find(p => p.name === ploName);
+
+  if (!existingPLO) {
+    await supabase.from("plos").insert([{
+      name: ploName,
+      program
+    }]);
+  }
+}
+
+// مهم جدًا
+await loadPLOs();
+await new Promise(res => setTimeout(res, 300));
+  for (const row of excelPreview) {
+
+    try {
+
+
+      // ✅ course lookup
+      let course = courses.find(c => c.code === row.CourseCode);
+
+      if (!course) {
+        const { data } = await supabase
+          .from("courses")
+          .insert([{ code: row.CourseCode, program }])
+          .select()
+          .single();
+
+        course = data;
+      }
+
+      // ✅ insert CLO
+      await supabase.from("clo_records").insert([{
+        description: row.CLO_Description,
+        achievement: Number(row.Achievement),
+        mapping: `${row.PLO}:100`,
+        weight: Number(row.Weight) || 1,
+        program,
+        year: String(activeYear),
+        course_id: course.id
+      }]);
+
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  alert("✅ Data Imported Successfully");
+
+  setShowPreview(false);
+  setExcelPreview([]);
+  loadData();
+};
+
 
   const downloadCLOTemplate = () => {
     const headers = [
@@ -1223,7 +1320,6 @@ if (!user) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-return <h1>HELLO DR AHMED ✅</h1>;
       <br /><br />
 
       <input
@@ -2028,7 +2124,20 @@ if (!supabase) {
                 </thead>
                 <tbody>
                   {excelPreview.map((row, idx) => (
-                    <tr key={idx}>
+                    
+<tr
+  key={idx}
+  style={{
+    backgroundColor:
+      !row.Program ||
+      !row.CourseCode ||
+      !row.PLO ||
+      isNaN(Number(row.Achievement))
+        ? "#ffdddd"
+        : "white"
+  }}
+>
+
                       {Object.values(row).map((val, i) => (
                         <td key={i}>{String(val)}</td>
                       ))}
